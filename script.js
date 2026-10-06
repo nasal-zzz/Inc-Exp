@@ -1,6 +1,19 @@
 (function () {
   'use strict';
 
+  // If index.html and script.js are from different versions, say so instead of failing silently.
+  var REQUIRED = ['tabExpenses', 'tabIncome', 'expenseList', 'incomeList', 'detailList', 'addIncomeBtn', 'addExpenseBtn',
+    'addOtherBtn', 'detailAddExpense', 'detailExport', 'exportAllBtn', 'clearAllBtn', 'incomeModal', 'detailModal',
+    'expenseModal', 'confirmModal', 'exIncome', 'otherRows', 'exHint'];
+  window.__appReady = true;
+  var missingIds = REQUIRED.filter(function (id) { return !document.getElementById(id); });
+  if (missingIds.length) {
+    document.body.insertAdjacentHTML('afterbegin',
+      '<div style="position:relative;z-index:99;margin:12px;padding:14px;border-radius:14px;background:#fff0ec;color:#c2371f;font:600 14px system-ui">' +
+      'Files are out of date. Upload all 3 files (index.html, style.css, script.js), then refresh the page.</div>');
+    return;
+  }
+
   // Same key as before, so data saved by the earlier version is kept.
   var STORAGE_KEY = 'income-expense-tracker-v1';
   var MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
@@ -520,26 +533,4 @@
       askConfirm('Delete this expense?', 'This cannot be undone.', function () {
         state.expenses = state.expenses.filter(function (x) { return x.id !== id; });
         save();
-        render();
-      });
-    } else if (act === 'del-income') {
-      var linked = state.expenses.filter(function (x) { return x.incomeId === id; }).length;
-      var sub = linked
-        ? 'This also deletes ' + linked + ' expense ' + (linked === 1 ? 'entry' : 'entries') + ' from this income. This cannot be undone.'
-        : 'This cannot be undone.';
-      askConfirm('Delete this income?', sub, function () {
-        state.income = state.income.filter(function (x) { return x.id !== id; });
-        state.expenses = state.expenses.filter(function (x) { return x.incomeId !== id; });
-        save();
-        render();
-      });
-    }
-  }
-
-  $('expenseList').addEventListener('click', onListClick);
-  $('incomeList').addEventListener('click', onListClick);
-  $('detailList').addEventListener('click', onListClick);
-
-  /* ---------- Excel export ---------- */
-  function exportExcel(incomeId) {
-    if (
+        render
