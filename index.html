@@ -37,8 +37,8 @@
 
     <!-- Tabs -->
     <nav class="tabs" role="tablist" aria-label="Transactions">
-      <button class="tab active" role="tab" aria-selected="true" data-tab="expenses" id="tabExpenses">Daily Expenses</button>
-      <button class="tab" role="tab" aria-selected="false" data-tab="income" id="tabIncome">Income</button>
+      <button class="tab active" role="tab" aria-selected="true" id="tabExpenses">Daily Expenses</button>
+      <button class="tab" role="tab" aria-selected="false" id="tabIncome">Income</button>
     </nav>
 
     <section id="expensesPanel" class="panel" aria-labelledby="tabExpenses">
@@ -50,6 +50,7 @@
     </section>
 
     <footer class="footer">
+      <button type="button" class="link-btn accent" id="exportAllBtn">Download Excel</button>
       <button type="button" class="link-btn" id="clearAllBtn">Clear All</button>
     </footer>
   </main>
@@ -93,12 +94,38 @@
     </div>
   </div>
 
+  <!-- Income details sheet -->
+  <div class="overlay" id="detailModal" hidden>
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+      <div class="grabber" aria-hidden="true"></div>
+      <h2 id="detailTitle">Income</h2>
+      <p class="sub-date" id="detailDate"></p>
+      <div class="mini-stats">
+        <div class="stat"><small>Income</small><b id="detailIncome">₹0</b></div>
+        <div class="stat spent"><small>Spent</small><b id="detailSpent">₹0</b></div>
+        <div class="stat bal" id="detailBalBox"><small>Balance</small><b id="detailBalance">₹0</b></div>
+      </div>
+      <div class="sheet-actions tight">
+        <button type="button" class="btn btn-expense" id="detailAddExpense">Add expense</button>
+        <button type="button" class="btn btn-ghost" id="detailExport">Download Excel</button>
+      </div>
+      <h3 class="list-title">Expenses from this income</h3>
+      <div id="detailList" class="list"></div>
+      <button type="button" class="btn btn-ghost full" data-close>Close</button>
+    </div>
+  </div>
+
   <!-- Expense sheet -->
   <div class="overlay" id="expenseModal" hidden>
     <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="expenseTitle">
       <div class="grabber" aria-hidden="true"></div>
       <h2 id="expenseTitle">Add Expense</h2>
       <form id="expenseForm" novalidate>
+        <label class="field">
+          <span>From income</span>
+          <select id="exIncome"></select>
+        </label>
+        <p class="hint" id="exHint"></p>
         <label class="field">
           <span>Date</span>
           <input type="date" id="expenseDate" required />
@@ -121,6 +148,11 @@
             <input type="number" id="exNight" inputmode="decimal" min="0" step="any" placeholder="0" />
           </label>
         </div>
+
+        <div class="sub">Other expenses</div>
+        <div id="otherRows"></div>
+        <button type="button" class="add-other" id="addOtherBtn">+ Add other expense</button>
+
         <div class="day-total">
           <span>Day total</span>
           <strong id="expenseDayTotal">₹0</strong>
@@ -147,6 +179,8 @@
     </div>
   </div>
 
+  <!-- Excel library (real .xlsx export) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
