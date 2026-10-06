@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#161a45" />
+  <title>Income &amp; Expense</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="hero">
+    <h1>Income &amp; Expense</h1>
+    <p>Track your daily money easily</p>
+  </header>
+
+  <main class="app">
+
+    <!-- Summary -->
+    <section class="summary" aria-label="Summary">
+      <article class="card balance">
+        <span class="label"><span class="emoji" aria-hidden="true">💵</span> Balance</span>
+        <strong class="amount" id="balanceTotal">₹0</strong>
+      </article>
+      <article class="card income">
+        <span class="label"><span class="emoji" aria-hidden="true">💰</span> Income</span>
+        <strong class="amount" id="incomeTotal">₹0</strong>
+      </article>
+      <article class="card expense">
+        <span class="label"><span class="emoji" aria-hidden="true">💸</span> Expenses</span>
+        <strong class="amount" id="expenseTotal">₹0</strong>
+      </article>
+    </section>
+
+    <!-- Tabs -->
+    <nav class="tabs" role="tablist" aria-label="Transactions">
+      <button class="tab active" role="tab" aria-selected="true" data-tab="expenses" id="tabExpenses">Daily Expenses</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="income" id="tabIncome">Income</button>
+    </nav>
+
+    <section id="expensesPanel" class="panel" aria-labelledby="tabExpenses">
+      <div id="expenseList" class="list"></div>
+    </section>
+
+    <section id="incomePanel" class="panel" hidden aria-labelledby="tabIncome">
+      <div id="incomeList" class="list"></div>
+    </section>
+
+    <footer class="footer">
+      <button type="button" class="link-btn" id="clearAllBtn">Clear All</button>
+    </footer>
+  </main>
+
+  <!-- Bottom action bar -->
+  <div class="actionbar">
+    <button type="button" class="btn btn-income" id="addIncomeBtn">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+      Add Income
+    </button>
+    <button type="button" class="btn btn-expense" id="addExpenseBtn">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+      Add Expense
+    </button>
+  </div>
+
+  <!-- Income sheet -->
+  <div class="overlay" id="incomeModal" hidden>
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="incomeTitle">
+      <div class="grabber" aria-hidden="true"></div>
+      <h2 id="incomeTitle">Add Income</h2>
+      <form id="incomeForm" novalidate>
+        <label class="field">
+          <span>Amount (₹)</span>
+          <input type="number" id="incomeAmount" inputmode="decimal" min="0" step="any" placeholder="0" required />
+        </label>
+        <label class="field">
+          <span>Date</span>
+          <input type="date" id="incomeDate" required />
+        </label>
+        <label class="field">
+          <span>Note</span>
+          <input type="text" id="incomeNote" maxlength="60" placeholder="e.g. Salary" autocomplete="off" />
+        </label>
+        <p class="error" id="incomeError" role="alert"></p>
+        <div class="sheet-actions">
+          <button type="button" class="btn btn-ghost" data-close>Cancel</button>
+          <button type="submit" class="btn btn-income">Save income</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Expense sheet -->
+  <div class="overlay" id="expenseModal" hidden>
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="expenseTitle">
+      <div class="grabber" aria-hidden="true"></div>
+      <h2 id="expenseTitle">Add Expense</h2>
+      <form id="expenseForm" novalidate>
+        <label class="field">
+          <span>Date</span>
+          <input type="date" id="expenseDate" required />
+        </label>
+        <div class="grid2">
+          <label class="field">
+            <span>Morning</span>
+            <input type="number" id="exMorning" inputmode="decimal" min="0" step="any" placeholder="0" />
+          </label>
+          <label class="field">
+            <span>Afternoon</span>
+            <input type="number" id="exAfternoon" inputmode="decimal" min="0" step="any" placeholder="0" />
+          </label>
+          <label class="field">
+            <span>Evening</span>
+            <input type="number" id="exEvening" inputmode="decimal" min="0" step="any" placeholder="0" />
+          </label>
+          <label class="field">
+            <span>Night</span>
+            <input type="number" id="exNight" inputmode="decimal" min="0" step="any" placeholder="0" />
+          </label>
+        </div>
+        <div class="day-total">
+          <span>Day total</span>
+          <strong id="expenseDayTotal">₹0</strong>
+        </div>
+        <p class="error" id="expenseError" role="alert"></p>
+        <div class="sheet-actions">
+          <button type="button" class="btn btn-ghost" data-close>Cancel</button>
+          <button type="submit" class="btn btn-expense">Save expense</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Confirm sheet -->
+  <div class="overlay" id="confirmModal" hidden>
+    <div class="sheet" role="alertdialog" aria-modal="true" aria-labelledby="confirmText">
+      <div class="grabber" aria-hidden="true"></div>
+      <h2 id="confirmText">Delete all saved data?</h2>
+      <p class="muted" id="confirmSub">This cannot be undone.</p>
+      <div class="sheet-actions">
+        <button type="button" class="btn btn-ghost" id="confirmCancel">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirmOk">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
