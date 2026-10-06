@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=3" />
+  <link rel="stylesheet" href="style.css?v=4" />
 </head>
 <body>
 
@@ -179,9 +179,16 @@
     </div>
   </div>
 
-  <!-- Excel library (real .xlsx export) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="script.js?v=3"></script>
+  <script src="script.js?v=4" defer></script>
+  <script>
+    // Shows a message if script.js is missing or has the wrong file name.
+    window.addEventListener('load', function () {
+      if (window.__appReady) return;
+      document.body.insertAdjacentHTML('afterbegin',
+        '<div style="position:relative;z-index:99;margin:12px;padding:14px;border-radius:14px;background:#fff0ec;color:#c2371f;font:600 14px system-ui">' +
+        'script.js did not load. Check the file is named exactly script.js in the same folder as index.html, then refresh.</div>');
+    });
+  </script>
 </body>
-    </html>
+            </html>
   
